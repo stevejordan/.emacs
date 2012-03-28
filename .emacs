@@ -52,14 +52,22 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(c-basic-offset 4)
+ '(js2-allow-keywords-as-property-names nil)
  '(js2-basic-offset 4)
  '(js2-bounce-indent-p t)
  '(js2-cleanup-whitespace nil)
  '(js2-highlight-level 3)
  '(js2-indent-on-enter-key nil)
+ '(js2-missing-semi-one-line-override nil)
  '(js2-mode-escape-quotes nil)
  '(js2-mode-show-parse-errors nil)
+ '(js2-mode-show-strict-warnings nil)
+ '(js2-strict-cond-assign-warning nil)
  '(js2-strict-inconsistent-return-warning nil)
+ '(js2-strict-missing-semi-warning nil)
+ '(js2-strict-trailing-comma-warning nil)
+ '(js2-strict-var-hides-function-arg-warning nil)
+ '(js2-strict-var-redeclaration-warning nil)
  '(org-agenda-custom-commands (quote (("d" todo "DELEGATED" nil) ("c" todo "DONE|DEFERRED|CANCELLED" nil) ("w" todo "WAITING" nil) ("W" agenda "" ((org-agenda-ndays 21))) ("A" agenda "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]"))) (org-agenda-ndays 1) (org-agenda-overriding-header "Today's Priority #A tasks: "))) ("u" alltodo "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote scheduled) (quote deadline) (quote regexp) "
 ]+>"))) (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
  '(org-agenda-files (quote ("/home/sbbd168/orgs/august.org")))
@@ -92,18 +100,12 @@
 ;;spaces not tabs!
 (setq-default indent-tabs-mode nil)
 
-;;jslint
-(add-hook 'js2-mode-hook
-  (lambda ()
-    ;;; make emacs recognize the error format produced by jslint
-    ;;(make-local-variable 'compilation-error-regexp-alist)
-    (setq compilation-error-regexp-alist
-       '(("^\\([a-zA-Z.0-9_/-]+\\): on line \\([0-9]+\\):\\([0-9]+\\):" 1 2 3)))
-    (set (make-local-variable 'compile-command)
-       (let ((file (file-name-nondirectory buffer-file-name)))
-          (concat "/usr/local/sbin/jslint " file)))))
 
 (put 'downcase-region 'disabled nil)
+
+;jslint hookup
+(add-to-list 'load-path "~/.emacs.d/jslint-flymake")
+(require 'jslint-flymake)
 
 ;; sensitive mode - disables backup ~ files on current buffer
 (define-minor-mode sensitive-mode
@@ -300,3 +302,11 @@ Null prefix argument turns off the mode."
 
 ;;textile minor mode (http://code.google.com/p/textile-minor-mode/)
 (require 'textile-minor-mode)
+
+;;org-jira setup
+(setq jiralib-url "https://jira.city.ac.uk/tracker")
+(require 'org-jira)
+
+;;external browser setup
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "chromium-browser")
