@@ -83,6 +83,7 @@
  '(org-remember-templates (quote ((116 "* TODO %?
   %u" "~/todo.org" "Tasks") (110 "* %u %?" "~/notes.org" "Notes"))))
  '(org-reverse-note-order t)
+ '(org-src-fontify-natively t)
  '(remember-annotation-functions (quote (org-remember-annotation)))
  '(remember-handler-functions (quote (org-remember-handler))))
 
