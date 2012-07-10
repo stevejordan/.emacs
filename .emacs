@@ -3,22 +3,22 @@
 ;;   "Switch entry to DONE when all subentries are done, to TODO otherwise."
 ;;   (let (org-log-done org-log-states)   ; turn off logging
 ;;     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
-     
+
 ;; (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
 
 ;; first autoload org-mode (don't think we need this?)
 ;;(require 'org-install)
 ;;(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-  
+
   ;; key bindings
   (define-key mode-specific-map [?a] 'org-agenda)
-  
+
   (eval-after-load "org"
     '(progn
        (define-prefix-command 'org-todo-state-map)
-  
+
        (define-key org-mode-map "\C-cx" 'org-todo-state-map)
-  
+
        (define-key org-todo-state-map "x"
          #'(lambda nil (interactive) (org-todo "CANCELLED")))
        (define-key org-todo-state-map "d"
@@ -31,21 +31,21 @@
          #'(lambda nil (interactive) (org-todo "STARTED")))
        (define-key org-todo-state-map "w"
          #'(lambda nil (interactive) (org-todo "WAITING")))
-  
+
        ;; (define-key org-agenda-mode-map "\C-n" 'next-line)
        ;; (define-key org-agenda-keymap "\C-n" 'next-line)
        ;; (define-key org-agenda-mode-map "\C-p" 'previous-line)
        ;; (define-key org-agenda-keymap "\C-p" 'previous-line)
        )
     )
-  
+
   ;; remember mode and key binding (C-M-r)
   (require 'remember)
   (add-hook 'remember-mode-hook 'org-remember-apply-template)
   (define-key global-map [(control meta ?r)] 'remember)
-  
+
   ;; org setup
-  
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -95,6 +95,10 @@
            (normal-top-level-add-subdirs-to-load-path))
          load-path)))
 
+;; add .emacs.d/vendor/* to load path
+(let ((default-directory "~/.emacs.d/vendor/"))
+  (normal-top-level-add-subdirs-to-load-path))
+
 ;;load hl-tags-mode
 ;;(require 'hl-tags-mode)
 
@@ -128,7 +132,7 @@ Null prefix argument turns off the mode."
   (if (symbol-value sensitive-mode)
       (progn
 	;; disable backups
-	(set (make-local-variable 'backup-inhibited) t)	
+	(set (make-local-variable 'backup-inhibited) t)
 	;; disable auto-save
 	(if auto-save-default
 	    (auto-save-mode -1)))
@@ -181,7 +185,7 @@ Null prefix argument turns off the mode."
     ;; execute perl -wc
     (call-process "perl" nil "perlsyn" nil "-wc" source-full-path)
     ;; execute podchecker
-;;    (call-process "podchecker" nil "perlsyn" nil 
+;;    (call-process "podchecker" nil "perlsyn" nil
 ;;                                                source-full-path)
     ;; checks if perl returned a syntax OK string
     (if (not (equal (substring (buffer-string) -3 -1) "OK"))
@@ -210,7 +214,7 @@ Null prefix argument turns off the mode."
 ;;   (interactive)
 ;;   (compile (format "php -l %s" (buffer-file-name)))
 ;; )
-;; (add-hook 
+;; (add-hook
 ;;  'php-mode-hook
 ;;  '(lambda ()
 ;;     (local-set-key [f8] 'phplint-thisfile)
@@ -233,6 +237,7 @@ Null prefix argument turns off the mode."
 (add-to-list 'flymake-allowed-file-name-masks '("\\.phtml$" flymake-php-init))
 (add-to-list 'flymake-allowed-file-name-masks '("\\.inc$" flymake-php-init))
 
+;; todo: check if we are editing accross TRAMP
 (add-hook 'php-mode-hook (lambda () (flymake-mode 1)))
 ;;(define-key php-mode-map '[M-S-up] 'flymake-goto-prev-error)
 ;;(define-key php-mode-map '[M-S-down] 'flymake-goto-next-error)
@@ -311,3 +316,7 @@ Null prefix argument turns off the mode."
 ;;external browser setup
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "chromium-browser")
+
+;;mark-multiple modules
+(require 'inline-string-rectangle)
+(global-set-key (kbd "C-x r t") 'inline-string-rectangle)
