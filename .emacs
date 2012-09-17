@@ -394,3 +394,7 @@ it)"
 (add-to-list 'package-archives
   '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
+
+;;yasnippet setup
+(setq yas/root-directory '("~/.emacs.d/yasnippets"))
+(mapc 'yas/load-directory yas/root-directory)
