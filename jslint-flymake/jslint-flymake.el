@@ -1,4 +1,5 @@
-(when (load "flymake" t)
+;;(when (load "flymake" t)
+
   (defun flymake-jslint-init ()
     "sets up flymake to use jslint (via node.js)"
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -15,7 +16,9 @@
 	      flymake-err-line-patterns))
   
   (add-to-list 'flymake-allowed-file-name-masks
-               '("\\.js\\'" flymake-jslint-init)))
+               '("\\.js\\'" flymake-jslint-init))
+
+;;)
 
 ;start flymake with js2-mode
 (add-hook 'js2-mode-hook

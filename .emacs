@@ -52,6 +52,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(c-basic-offset 4)
+ '(desktop-path (quote ("." "~/emacs-desktop" "~/.emacs.d/" "~")))
  '(js2-allow-keywords-as-property-names nil)
  '(js2-basic-offset 4)
  '(js2-bounce-indent-p t)
@@ -109,8 +110,8 @@
 (put 'downcase-region 'disabled nil)
 
 ;jslint hookup
-(add-to-list 'load-path "~/.emacs.d/jslint-flymake")
-(require 'jslint-flymake)
+;;(add-to-list 'load-path "~/.emacs.d/jslint-flymake")
+;;(require 'jslint-flymake)
 
 ;; sensitive mode - disables backup ~ files on current buffer
 (define-minor-mode sensitive-mode
@@ -167,7 +168,7 @@ Null prefix argument turns off the mode."
 (autoload 'geben "geben" "PHP Debugger on Emacs" t)
 
 ;; newer php-mode
-(require 'pi-php-mode)
+;;(require 'pi-php-mode)
 
 ;; Perl syntax checking
 (defun steveperl-check-syntax ()
@@ -237,10 +238,72 @@ Null prefix argument turns off the mode."
 (add-to-list 'flymake-allowed-file-name-masks '("\\.phtml$" flymake-php-init))
 (add-to-list 'flymake-allowed-file-name-masks '("\\.inc$" flymake-php-init))
 
-;; todo: check if we are editing accross TRAMP
-(add-hook 'php-mode-hook (lambda () (flymake-mode 1)))
+
+(add-hook 'php-mode-hook (
+  lambda () (
+    ;; todo: check if we are editing accross TRAMP
+    flymake-mode 1)))
+
 ;;(define-key php-mode-map '[M-S-up] 'flymake-goto-prev-error)
 ;;(define-key php-mode-map '[M-S-down] 'flymake-goto-next-error)
+
+(defun flymake-jslint-init ()
+  "sets up flymake to use jslint (via node.js)"
+  (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
+         (local (file-relative-name temp (file-name-directory buffer-file-name))))
+    (list "~/webdevtest/jslint-wrapper-script" (list local))))
+
+(add-to-list 'flymake-err-line-patterns
+  '("#[0-9]+ \\([^*]+\\)[^/]+// Line \\([0-9]+\\), Pos \\([0-9]+\\)" nil 2 3 1))
+
+(add-to-list 'flymake-allowed-file-name-masks '("\\.js\\'" flymake-jslint-init))
+
+;; from http://paste.lisp.org/display/60617,1/raw :
+;;
+;; -*- emacs-lisp -*-
+;; License: Gnu Public License
+;;
+;; Additional functionality that makes flymake error messages appear
+;; in the minibuffer when point is on a line containing a flymake
+;; error. This saves having to mouse over the error, which is a
+;; keyboard user's annoyance
+
+;;flymake-ler(file line type text &optional full-file)
+(defun show-fly-err-at-point ()
+  "If the cursor is sitting on a flymake error, display the
+message in the minibuffer"
+  (interactive)
+  (let ((line-no (line-number-at-pos)))
+    (dolist (elem flymake-err-info)
+      (if (eq (car elem) line-no)
+	  (let ((err (car (second elem))))
+	    (message "%s" (fly-pyflake-determine-message err)))))))
+
+(defun fly-pyflake-determine-message (err)
+  "pyflake is flakey if it has compile problems, this adjusts the
+message to display, so there is one ;)"
+  (cond ((not (or (eq major-mode 'Python) (eq major-mode 'python-mode) t)))
+	((null (flymake-ler-file err))
+	 ;; normal message do your thing
+	 (flymake-ler-text err))
+	(t ;; could not compile err
+	 (format "compile error, problem on line %s" (flymake-ler-line err)))))
+
+(defadvice flymake-goto-next-error (after display-message activate compile)
+  "Display the error in the mini-buffer rather than having to mouse over it"
+  (show-fly-err-at-point))
+
+(defadvice flymake-goto-prev-error (after display-message activate compile)
+  "Display the error in the mini-buffer rather than having to mouse over it"
+  (show-fly-err-at-point))
+
+(defadvice flymake-mode (before post-command-stuff activate compile)
+  "Add functionality to the post command hook so that if the
+cursor is sitting on a flymake error the error information is
+displayed in the minibuffer (rather than having to mouse over
+it)"
+  (set (make-local-variable 'post-command-hook)
+       (cons 'show-fly-err-at-point post-command-hook)))
 
 ;; remove tool bar in X11 mode
 (tool-bar-mode -1)
@@ -325,3 +388,9 @@ Null prefix argument turns off the mode."
 (global-set-key (kbd "C-<") 'mark-previous-like-this)
 (global-set-key (kbd "C->") 'mark-next-like-this)
 (global-set-key (kbd "C-M-m") 'mark-more-like-this)
+
+;;marmalade
+(require 'package)
+(add-to-list 'package-archives
+  '("marmalade" . "http://marmalade-repo.org/packages/"))
+(package-initialize)
