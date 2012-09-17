@@ -3,4 +3,4 @@
 	url = https://github.com/magnars/mark-multiple.el.git
 [submodule "vendor/php-mode"]
 	path = vendor/php-mode
-	url = git://github.com/ejmr/php-mode.git
+	url = https://github.com/ejmr/php-mode.git
