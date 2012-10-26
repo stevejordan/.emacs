@@ -2,17 +2,21 @@
 
   (defun flymake-jslint-init ()
     "sets up flymake to use jslint (via node.js)"
+    (interactive)
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
 		       'flymake-create-temp-inplace))
            (local-file (file-relative-name
                         temp-file
                         (file-name-directory buffer-file-name))))
-      (list "jslint" (list local-file))))
+      (list "jshint" (list local-file))))
 
   (setq flymake-err-line-patterns 
-        (cons '("^[^:]+: on line \\([0-9]+\\):\\([0-9]+\\): \\(.+\\)."
+        ;(cons '("^[^:]+: on line \\([0-9]+\\):\\([0-9]+\\): \\(.+\\)."
         ;(cons '("^  [[:digit:]]+ \\([[:digit:]]+\\),\\([[:digit:]]+\\): \\(.+\\)$"  
-		nil 1 2 3)
+
+        ;; new regex for jshint
+        (cons '("\\([^:]+\\): line \\([[:digit:]]+\\), col \\([[:digit:]]+\\), \\(.+\\)$"
+		1 2 3 4)
 	      flymake-err-line-patterns))
   
   (add-to-list 'flymake-allowed-file-name-masks
