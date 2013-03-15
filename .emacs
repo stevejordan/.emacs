@@ -53,11 +53,14 @@
   ;; If there is more than one, they won't work right.
  '(c-basic-offset 4)
  '(desktop-path (quote ("." "~/emacs-desktop" "~/.emacs.d/" "~")))
+ '(font-use-system-font t)
  '(js2-allow-keywords-as-property-names nil)
  '(js2-basic-offset 4)
  '(js2-bounce-indent-p t)
- '(js2-cleanup-whitespace nil)
+ '(js2-cleanup-whitespace t)
+ '(js2-highlight-external-variables nil)
  '(js2-highlight-level 3)
+ '(js2-idle-timer-delay 0.2)
  '(js2-indent-on-enter-key nil)
  '(js2-missing-semi-one-line-override nil)
  '(js2-mode-escape-quotes nil)
@@ -86,7 +89,8 @@
  '(org-reverse-note-order t)
  '(org-src-fontify-natively t)
  '(remember-annotation-functions (quote (org-remember-annotation)))
- '(remember-handler-functions (quote (org-remember-handler))))
+ '(remember-handler-functions (quote (org-remember-handler)))
+ '(vc-svn-global-switches nil))
 
 ;; add .emacs.d/elisp to load path
 (let ((default-directory  "~/.emacs.d/elisp/"))
@@ -106,12 +110,13 @@
 ;;spaces not tabs!
 (setq-default indent-tabs-mode nil)
 
-
+;;take the stabilisers off downcase-region
 (put 'downcase-region 'disabled nil)
 
-;jslint hookup
-;;(add-to-list 'load-path "~/.emacs.d/jslint-flymake")
-;;(require 'jslint-flymake)
+;jshint hookup
+(require 'flymake-jshint)
+(add-hook 'js2-mode-hook
+     (lambda () (flymake-mode t)))
 
 ;; sensitive mode - disables backup ~ files on current buffer
 (define-minor-mode sensitive-mode
@@ -227,9 +232,13 @@ Null prefix argument turns off the mode."
 (require 'flymake)
 (defun flymake-php-init ()
   "Use php to check the syntax of the current file."
-  (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
-	 (local (file-relative-name temp (file-name-directory buffer-file-name))))
-    (list "php" (list "-f" local "-l"))))
+  (when (not (tramp-file-name-p buffer-file-name))
+    ;make sure this buffer isn't over tramp
+    (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
+           (local (file-relative-name temp (file-name-directory buffer-file-name))))
+      (list "php" (list "-f" local "-l")))
+    ) ; end when
+  ) ; end func
 
 (add-to-list 'flymake-err-line-patterns
   '("\\(Parse\\|Fatal\\) error: +\\(.*?\\) in \\(.*?\\) on line \\([0-9]+\\)$" 3 4 nil 2))
@@ -238,7 +247,6 @@ Null prefix argument turns off the mode."
 (add-to-list 'flymake-allowed-file-name-masks '("\\.phtml$" flymake-php-init))
 (add-to-list 'flymake-allowed-file-name-masks '("\\.inc$" flymake-php-init))
 
-
 (add-hook 'php-mode-hook (
   lambda () (
     ;; todo: check if we are editing accross TRAMP
@@ -246,17 +254,6 @@ Null prefix argument turns off the mode."
 
 ;;(define-key php-mode-map '[M-S-up] 'flymake-goto-prev-error)
 ;;(define-key php-mode-map '[M-S-down] 'flymake-goto-next-error)
-
-(defun flymake-jslint-init ()
-  "sets up flymake to use jslint (via node.js)"
-  (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
-         (local (file-relative-name temp (file-name-directory buffer-file-name))))
-    (list "~/webdevtest/jslint-wrapper-script" (list local))))
-
-(add-to-list 'flymake-err-line-patterns
-  '("#[0-9]+ \\([^*]+\\)[^/]+// Line \\([0-9]+\\), Pos \\([0-9]+\\)" nil 2 3 1))
-
-(add-to-list 'flymake-allowed-file-name-masks '("\\.js\\'" flymake-jslint-init))
 
 ;; from http://paste.lisp.org/display/60617,1/raw :
 ;;
@@ -370,11 +367,11 @@ it)"
 (setq-default indicate-buffer-boundaries 'left)
 
 ;;textile minor mode (http://code.google.com/p/textile-minor-mode/)
-(require 'textile-minor-mode)
+;;(require 'textile-minor-mode)
 
 ;;org-jira setup
-(setq jiralib-url "https://jira.city.ac.uk/tracker")
-(require 'org-jira)
+;;(setq jiralib-url "https://jira.city.ac.uk/tracker")
+;;(require 'org-jira)
 
 ;;external browser setup
 (setq browse-url-browser-function 'browse-url-generic
