@@ -51,8 +51,11 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(browse-url-browser-function (quote browse-url-generic))
+ '(browse-url-generic-program "chromium")
  '(c-basic-offset 4)
  '(desktop-path (quote ("." "~/emacs-desktop" "~/.emacs.d/" "~")))
+ '(display-time-day-and-date t)
  '(font-use-system-font t)
  '(js2-allow-keywords-as-property-names nil)
  '(js2-basic-offset 4)
@@ -69,7 +72,7 @@
  '(js2-strict-cond-assign-warning nil)
  '(js2-strict-inconsistent-return-warning nil)
  '(js2-strict-missing-semi-warning nil)
- '(js2-strict-trailing-comma-warning nil)
+ '(js2-strict-trailing-comma-warning t)
  '(js2-strict-var-hides-function-arg-warning nil)
  '(js2-strict-var-redeclaration-warning nil)
  '(org-agenda-custom-commands (quote (("d" todo "DELEGATED" nil) ("c" todo "DONE|DEFERRED|CANCELLED" nil) ("w" todo "WAITING" nil) ("W" agenda "" ((org-agenda-ndays 21))) ("A" agenda "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]"))) (org-agenda-ndays 1) (org-agenda-overriding-header "Today's Priority #A tasks: "))) ("u" alltodo "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote scheduled) (quote deadline) (quote regexp) "
@@ -395,3 +398,32 @@ it)"
 ;;yasnippet setup
 (setq yas/root-directory '("~/.emacs.d/yasnippets"))
 (mapc 'yas/load-directory yas/root-directory)
+
+;;pretty printing xml
+;;http://blog.bookworm.at/2007/03/pretty-print-xml-with-emacs.html
+(defun bf-pretty-print-xml-region (begin end)
+  "Pretty format XML markup in region. You need to have nxml-mode
+http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+this.  The function inserts linebreaks to separate tags that have
+nothing but whitespace between them.  It then indents the markup
+by using nxml's indentation rules."
+  (interactive "r")
+  (save-excursion
+      (nxml-mode)
+      (goto-char begin)
+      (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+        (backward-char) (insert "\n"))
+      (indent-region begin end))
+    (message "Ah, much better!"))
+
+;;el-get setup
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(require 'el-get)
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get/recipes")
+(el-get 'sync)
+(setq el-get-user-package-directory "~/emacs.d/el-get/init-files")
+
+
+;; ediff for vc-diff please
+(eval-after-load "vc-hooks"
+    '(define-key vc-prefix-map "=" 'ediff-revision))
