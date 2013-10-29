@@ -52,7 +52,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(browse-url-browser-function (quote browse-url-generic))
- '(browse-url-generic-program "chromium")
+ '(browse-url-generic-program "chromium" t)
  '(c-basic-offset 4)
  '(desktop-path (quote ("." "~/emacs-desktop" "~/.emacs.d/" "~")))
  '(display-time-day-and-date t)
@@ -93,6 +93,7 @@
  '(org-src-fontify-natively t)
  '(remember-annotation-functions (quote (org-remember-annotation)))
  '(remember-handler-functions (quote (org-remember-handler)))
+ '(sgml-basic-offset 4)
  '(vc-svn-global-switches nil))
 
 ;; add .emacs.d/elisp to load path
@@ -235,12 +236,12 @@ Null prefix argument turns off the mode."
 (require 'flymake)
 (defun flymake-php-init ()
   "Use php to check the syntax of the current file."
-  (when (not (tramp-file-name-p buffer-file-name))
+  ;(when (not (tramp-file-name-p buffer-file-name))
     ;make sure this buffer isn't over tramp
     (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
            (local (file-relative-name temp (file-name-directory buffer-file-name))))
       (list "php" (list "-f" local "-l")))
-    ) ; end when
+   ; ) ; end when
   ) ; end func
 
 (add-to-list 'flymake-err-line-patterns
