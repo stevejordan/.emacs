@@ -396,10 +396,6 @@ it)"
   '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
-;;yasnippet setup
-(setq yas/root-directory '("~/.emacs.d/yasnippets"))
-(mapc 'yas/load-directory yas/root-directory)
-
 ;;pretty printing xml
 ;;http://blog.bookworm.at/2007/03/pretty-print-xml-with-emacs.html
 (defun bf-pretty-print-xml-region (begin end)
@@ -424,6 +420,9 @@ by using nxml's indentation rules."
 (el-get 'sync)
 (setq el-get-user-package-directory "~/emacs.d/el-get/init-files")
 
+;;yasnippet setup
+(setq yas/root-directory '("~/.emacs.d/yasnippets"))
+(mapc 'yas/load-directory yas/root-directory)
 
 ;; ediff for vc-diff please
 (eval-after-load "vc-hooks"
