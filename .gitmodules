@@ -6,7 +6,7 @@
 	url = https://github.com/ejmr/php-mode.git
 [submodule "vendor/yasnippet-php-mode"]
 	path = vendor/yasnippet-php-mode
-	url = https://github.com/nishimura/minimal-yasnippet-php-mode.git
+	url = git@github.com:stevejordan/minimal-yasnippet-php-mode.git
 [submodule "vendor/jshint-mode"]
 	path = vendor/jshint-mode
 	url = git://github.com/daleharvey/jshint-mode.git
