@@ -1,0 +1,5 @@
+(:name git-gutter
+       :description git status in the fringe
+       :type github
+       :pkgname "syohex/emacs-git-gutter"
+       :features git-gutter)

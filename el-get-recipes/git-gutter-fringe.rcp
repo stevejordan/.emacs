@@ -1,0 +1,6 @@
+(:name git-gutter-fringe
+       :description git status in the fringe
+       :type github
+       :pkgname "syohex/emacs-git-gutter-fringe"
+       :depends (git-gutter fringe-helper)
+       :features git-gutter-fringe)

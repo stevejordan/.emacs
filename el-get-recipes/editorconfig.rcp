@@ -1,0 +1,5 @@
+(:name editorconfig
+       :description "support for .editorconfig files"
+       :type github
+       :pkgname "editorconfig/editorconfig-emacs"
+       :features editorconfig)
