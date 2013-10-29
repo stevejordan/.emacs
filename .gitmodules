@@ -10,3 +10,6 @@
 [submodule "vendor/jshint-mode"]
 	path = vendor/jshint-mode
 	url = git://github.com/daleharvey/jshint-mode.git
+[submodule "vendor/emacs-flymake"]
+	path = vendor/emacs-flymake
+	url = https://github.com/illusori/emacs-flymake.git
