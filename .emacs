@@ -1,3 +1,5 @@
+(require 'cl) ; common lisp goodies, loop
+
 ;;org-mode setup
 ;; (defln org-summary-todo (n-done n-not-done)
 ;;   "Switch entry to DONE when all subentries are done, to TODO otherwise."
@@ -422,8 +424,33 @@ by using nxml's indentation rules."
      (end-of-buffer)
      (eval-print-last-sexp))))
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get/recipes")
-(el-get 'sync)
-(setq el-get-user-package-directory "~/emacs.d/el-get/init-files")
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-recipes")
+(setq el-get-user-package-directory "~/emacs.d/el-get-init-files")
+
+;; these are the packages we want el-get to handle by default
+(setq steve:el-get-packages
+      '( 
+      ;editorconfig
+       fringe-helper
+       git-gutter
+       git-gutter-fringe
+       js2-mode))
+
+(setq steve:packages-with-init
+      '((:name editorconfig
+         :after (lambda ()
+            (message "loaded editorconfig")
+         )))
+)
+
+(setq steve:el-get-packages
+      (append
+       steve:el-get-packages
+       (loop for src in 
+             steve:packages-with-init collect 
+             (el-get-source-name src))))
+
+(el-get 'sync steve:el-get-packages)
 
 ;;yasnippet setup
 (setq yas/root-directory '("~/.emacs.d/yasnippets"))
