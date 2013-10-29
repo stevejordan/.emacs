@@ -415,7 +415,12 @@ by using nxml's indentation rules."
 
 ;;el-get setup
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-(require 'el-get)
+(unless (require 'el-get nil t)
+  (url-retrieve
+   "https://github.com/dimitri/el-get/raw/master/el-get-install.el"
+   (lambda (s)
+     (end-of-buffer)
+     (eval-print-last-sexp))))
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get/recipes")
 (el-get 'sync)
 (setq el-get-user-package-directory "~/emacs.d/el-get/init-files")
