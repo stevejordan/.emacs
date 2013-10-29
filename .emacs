@@ -433,9 +433,14 @@ by using nxml's indentation rules."
         git-gutter
         js2-mode
         magit
-        yasnippet
 
 ;; the ones that need extra init
+        (:name yasnippet
+         :after (progn
+            ;;yasnippet setup
+            (setq yas/root-directory '("~/.emacs.d/yasnippets"))
+            (mapc 'yas/load-directory yas/root-directory)
+        ))
         (:name editorconfig
          :after (progn
             (message "loaded editorconfig")
@@ -448,10 +453,6 @@ by using nxml's indentation rules."
 ))
 
 (el-get 'sync)
-
-;;yasnippet setup
-(setq yas/root-directory '("~/.emacs.d/yasnippets"))
-(mapc 'yas/load-directory yas/root-directory)
 
 ;; ediff for vc-diff please
 (eval-after-load "vc-hooks"
