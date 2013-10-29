@@ -425,32 +425,29 @@ by using nxml's indentation rules."
      (eval-print-last-sexp))))
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get/recipes")
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-recipes")
-(setq el-get-user-package-directory "~/emacs.d/el-get-init-files")
 
 ;; these are the packages we want el-get to handle by default
-(setq steve:el-get-packages
-      '( 
-      ;editorconfig
-       fringe-helper
-       git-gutter
-       git-gutter-fringe
-       js2-mode))
+(setq el-get-sources
+      '(el-get
+        fringe-helper
+        git-gutter
+        js2-mode
+        magit
+        yasnippet
 
-(setq steve:packages-with-init
-      '((:name editorconfig
-         :after (lambda ()
+;; the ones that need extra init
+        (:name editorconfig
+         :after (progn
             (message "loaded editorconfig")
-         )))
-)
+        ))
+        (:name git-gutter-fringe
+         :after (progn
+            (global-git-gutter-mode t)
+            (message "loaded git-gutter-fringe")
+        ))
+))
 
-(setq steve:el-get-packages
-      (append
-       steve:el-get-packages
-       (loop for src in 
-             steve:packages-with-init collect 
-             (el-get-source-name src))))
-
-(el-get 'sync steve:el-get-packages)
+(el-get 'sync)
 
 ;;yasnippet setup
 (setq yas/root-directory '("~/.emacs.d/yasnippets"))
